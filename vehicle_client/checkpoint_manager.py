@@ -29,3 +29,8 @@ def load_checkpoint():
 
     with open(CHECKPOINT_FILE, "r") as file:
         return json.load(file)
+
+def clear_checkpoint():
+    if os.path.exists(CHECKPOINT_FILE):
+        os.remove(CHECKPOINT_FILE)
+        print("[CHECKPOINT CLEARED]")
