@@ -2,16 +2,25 @@ import time
 
 from checkpoint_manager import save_checkpoint, load_checkpoint, clear_checkpoint
 from backend_notifier import notify_backend
-
-
+from notification_manager import send_notification
 
 VIN = "VIN001"
 CAMPAIGN = "FOTA_2026_001"
 
+VEHICLE = {
+    "vin": VIN,
+    "driving": False,
+    "enrolled_notifications": True
+}
+
+
 
 def execute_ota():
     print("\n=== OTA EXECUTION START ===\n")
-
+    send_notification(
+    VEHICLE,
+    "OTA update is available and ready to start."
+    )
     checkpoint = load_checkpoint()
 
     if checkpoint:
@@ -55,6 +64,11 @@ def execute_ota():
             )
 
             print("\nOTA paused. Run again after battery recovery.\n")
+
+            send_notification(
+                VEHICLE,
+                "OTA update paused due to low battery. It will resume when conditions improve."
+            )
             return
 
     battery = 65
@@ -84,6 +98,11 @@ def execute_ota():
         VIN,
         CAMPAIGN,
         "SUCCESS"
+    )
+
+    send_notification(
+        VEHICLE,
+        "OTA update completed successfully."
     )
 
     clear_checkpoint()
