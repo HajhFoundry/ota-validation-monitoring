@@ -1,5 +1,7 @@
 import json
 from fastapi import FastAPI
+from pydantic import BaseModel
+from backend.ota_controller import start_ota, pause_ota, resume_ota, get_ota_status
 
 app = FastAPI(
     title="OTA Validation & Monitoring Mock API",
@@ -7,6 +9,9 @@ app = FastAPI(
     version="1.0.0"
 )
 
+class OTAStartRequest(BaseModel):
+    vin: str
+    campaign_id: str
 
 def load_json(file_path):
     with open(file_path, "r") as file:
@@ -57,3 +62,22 @@ def get_campaign_by_id(campaign_id: str):
         "error": "Campaign not found",
         "campaign_id": campaign_id
     }
+
+@app.post("/ota/start")
+def api_start_ota(request: OTAStartRequest):
+    return start_ota(request.vin, request.campaign_id)
+
+
+@app.post("/ota/pause/{vin}")
+def api_pause_ota(vin: str):
+    return pause_ota(vin)
+
+
+@app.post("/ota/resume/{vin}")
+def api_resume_ota(vin: str):
+    return resume_ota(vin)
+
+
+@app.get("/ota/status/{vin}")
+def api_get_ota_status(vin: str):
+    return get_ota_status(vin)
