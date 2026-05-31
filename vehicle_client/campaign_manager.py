@@ -2,6 +2,7 @@ import json
 
 from eligibility_rules import evaluate_eligibility
 from safety_rules import evaluate_safety
+from cybersecurity_rules import evaluate_cybersecurity
 
 def load_json(file_path):
     with open(file_path, "r") as file:
@@ -60,9 +61,20 @@ def evaluate_campaigns():
                 )
                 continue
 
-            print(f"  {vehicle['vin']} -> ELIGIBLE AND SAFE")
+            
 
-        print()
+            secure, security_reasons = evaluate_cybersecurity(vehicle)
+
+            if not secure:
+                print(
+                    f"  {vehicle['vin']} -> TARGETED BUT CYBERSECURITY BLOCKED "
+                    f"({', '.join(security_reasons)})"
+                )
+                continue
+
+            print(
+                f"  {vehicle['vin']} -> ELIGIBLE + SAFE + CYBERSECURE"
+            )
 
 
 if __name__ == "__main__":
