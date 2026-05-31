@@ -3,6 +3,8 @@ import time
 from checkpoint_manager import save_checkpoint, load_checkpoint, clear_checkpoint
 from backend_notifier import notify_backend
 from notification_manager import send_notification
+from ota_state import OTAState
+
 
 VIN = "VIN001"
 CAMPAIGN = "FOTA_2026_001"
@@ -54,13 +56,13 @@ def execute_ota():
                 VIN,
                 CAMPAIGN,
                 progress,
-                "PAUSED_LOW_BATTERY"
+                OTAState.PAUSED_LOW_BATTERY.value
             )
 
             notify_backend(
                 VIN,
                 CAMPAIGN,
-                "PAUSED_LOW_BATTERY"
+                OTAState.PAUSED_LOW_BATTERY.value
             )
 
             print("\nOTA paused. Run again after battery recovery.\n")
@@ -83,16 +85,12 @@ def execute_ota():
         print(f"Download Progress: {progress}%")
         time.sleep(1)
 
-    print("\nVERIFYING PACKAGE")
+    print(f"[STATE] {OTAState.DOWNLOADING.value}")
+    print(f"[STATE] {OTAState.VERIFYING.value}")
+    print(f"[STATE] {OTAState.INSTALLING.value}")
+    print(f"[STATE] {OTAState.REBOOTING.value}")
+    print(f"[STATE] {OTAState.SUCCESS.value}")
     time.sleep(1)
-
-    print("INSTALLING")
-    time.sleep(1)
-
-    print("REBOOTING")
-    time.sleep(1)
-
-    print("SUCCESS")
 
     notify_backend(
         VIN,
