@@ -1,0 +1,55 @@
+[
+    {
+        "campaign_id": "FOTA_2026_001",
+        "campaign_name": "Explorer Gateway Firmware Update",
+        "update_type": "FOTA",
+        "target_model": "Explorer",
+        "target_year": 2025,
+        "target_region": "NA",
+        "target_version": "2.2.0",
+        "minimum_battery": 60,
+        "wifi_required": true,
+        "ignition_required_off": true,
+        "vehicle_must_be_parked": true,
+        "rollback_supported": true,
+        "package_size_mb": 850,
+        "priority": "HIGH",
+        "status": "ACTIVE"
+    },
+
+    {
+        "campaign_id": "AOTA_2026_001",
+        "campaign_name": "Navigation Application Update",
+        "update_type": "AOTA",
+        "target_model": "MustangMachE",
+        "target_year": 2024,
+        "target_region": "NA",
+        "target_version": "5.1.0",
+        "minimum_battery": 30,
+        "wifi_required": false,
+        "ignition_required_off": false,
+        "vehicle_must_be_parked": false,
+        "rollback_supported": false,
+        "package_size_mb": 120,
+        "priority": "MEDIUM",
+        "status": "ACTIVE"
+    },
+
+    {
+        "campaign_id": "FOTA_2026_002",
+        "campaign_name": "European Explorer Security Patch",
+        "update_type": "FOTA",
+        "target_model": "Explorer",
+        "target_year": 2025,
+        "target_region": "EU",
+        "target_version": "2.2.1",
+        "minimum_battery": 60,
+        "wifi_required": true,
+        "ignition_required_off": true,
+        "vehicle_must_be_parked": true,
+        "rollback_supported": true,
+        "package_size_mb": 920,
+        "priority": "CRITICAL",
+        "status": "ACTIVE"
+    }
+]
