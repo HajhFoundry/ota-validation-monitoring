@@ -1,6 +1,7 @@
 import json
 
 from eligibility_rules import evaluate_eligibility
+from safety_rules import evaluate_safety
 
 def load_json(file_path):
     with open(file_path, "r") as file:
@@ -41,14 +42,25 @@ def evaluate_campaigns():
 
             eligible, eligibility_reasons = evaluate_eligibility(vehicle, campaign)
 
-            if eligible:
-                print(f"  {vehicle['vin']} -> ELIGIBLE")
-            else:
+            if not eligible:
                 print(
-                    f"  {vehicle['vin']} -> TARGETED BUT BLOCKED "
+                    f"  {vehicle['vin']} -> TARGETED BUT ELIGIBILITY BLOCKED "
                     f"({', '.join(eligibility_reasons)})"
                 )
+                continue
 
+    
+
+            safe, safety_reasons = evaluate_safety(vehicle, campaign)
+
+            if not safe:
+                print(
+                    f"  {vehicle['vin']} -> TARGETED BUT SAFETY BLOCKED "
+                    f"({', '.join(safety_reasons)})"
+                )
+                continue
+
+            print(f"  {vehicle['vin']} -> ELIGIBLE AND SAFE")
 
         print()
 
