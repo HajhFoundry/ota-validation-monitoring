@@ -1,0 +1,46 @@
+[
+    {
+        "vin": "VIN001",
+        "model": "Explorer",
+        "year": 2025,
+        "region": "NA",
+        "update_type": "FOTA",
+        "firmware_version": "2.1.0",
+        "battery": 85,
+        "ignition": false,
+        "driving": false,
+        "wifi_connected": true,
+        "cellular_connected": true,
+        "enrolled_notifications": true
+    },
+
+    {
+        "vin": "VIN002",
+        "model": "MustangMachE",
+        "year": 2024,
+        "region": "NA",
+        "update_type": "AOTA",
+        "app_version": "5.0.1",
+        "battery": 72,
+        "ignition": false,
+        "driving": false,
+        "wifi_connected": true,
+        "cellular_connected": true,
+        "enrolled_notifications": true
+    },
+
+    {
+        "vin": "VIN003",
+        "model": "Explorer",
+        "year": 2025,
+        "region": "EU",
+        "update_type": "FOTA",
+        "firmware_version": "2.1.0",
+        "battery": 55,
+        "ignition": false,
+        "driving": false,
+        "wifi_connected": true,
+        "cellular_connected": true,
+        "enrolled_notifications": false
+    }
+]
