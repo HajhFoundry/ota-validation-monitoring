@@ -1,4 +1,10 @@
 import time
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
+
+from mqtt.mqtt_publisher import publish_ota_status
 
 from checkpoint_manager import save_checkpoint, load_checkpoint, clear_checkpoint
 from backend_notifier import notify_backend
@@ -15,7 +21,16 @@ VEHICLE = {
     "enrolled_notifications": True
 }
 
-
+def publish_state(state, progress):
+    publish_ota_status(
+        VIN,
+        {
+            "vin": VIN,
+            "campaign_id": CAMPAIGN,
+            "state": state,
+            "progress": progress
+        }
+    )
 
 def execute_ota():
     print("\n=== OTA EXECUTION START ===\n")
@@ -44,6 +59,10 @@ def execute_ota():
 
         progress = step
         print(f"Download Progress: {progress}%")
+        publish_state(
+            OTAState.PENDING.value,
+            progress
+        )
         time.sleep(1)
 
     if progress == 50 and not checkpoint:
@@ -65,6 +84,11 @@ def execute_ota():
                 OTAState.PAUSED_LOW_BATTERY.value
             )
 
+            publish_state(
+                OTAState.PAUSED_LOW_BATTERY.value,
+                progress
+            )
+
             print("\nOTA paused. Run again after battery recovery.\n")
 
             send_notification(
@@ -76,20 +100,38 @@ def execute_ota():
     battery = 65
     print(f"Battery OK: {battery}%")
     print("Continuing OTA...\n")
-
+    publish_state(
+        OTAState.PENDING.value,
+        progress
+    )
     for step in [75, 100]:
         if step <= progress:
             continue
 
         progress = step
         print(f"Download Progress: {progress}%")
+        publish_state(
+            OTAState.DOWNLOADING.value,
+            progress
+        )
         time.sleep(1)
 
-    print(f"[STATE] {OTAState.DOWNLOADING.value}")
-    print(f"[STATE] {OTAState.VERIFYING.value}")
-    print(f"[STATE] {OTAState.INSTALLING.value}")
-    print(f"[STATE] {OTAState.REBOOTING.value}")
-    print(f"[STATE] {OTAState.SUCCESS.value}")
+    publish_state(
+        OTAState.VERIFYING.value,
+        progress
+    )
+    publish_state(
+        OTAState.INSTALLING.value,
+        progress
+    )
+    publish_state(
+        OTAState.REBOOTING.value,
+        progress
+    )
+    publish_state(
+        OTAState.SUCCESS.value,
+        progress
+    )
     time.sleep(1)
 
     notify_backend(
