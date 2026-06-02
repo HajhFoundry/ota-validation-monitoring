@@ -31,7 +31,8 @@ page = st.sidebar.radio(
         "Vehicles",
         "Campaigns",
         "OTA Status",
-        "Release KPI View"
+        "Release KPI View",
+        "Manual OTA Test Console"
     ]
 )
 
@@ -196,3 +197,113 @@ elif page == "Release KPI View":
         "- Cybersecurity risk vehicles should be blocked from install until package validation passes.\n"
         "- Campaign health can be monitored through eligibility, safety, cybersecurity, and OTA state results."
     )
+
+elif page == "Manual OTA Test Console":
+    st.header("Manual OTA Test Console")
+
+    st.write(
+        "Change vehicle conditions and run OTA validation manually. "
+        "This simulates real-world validation testing."
+    )
+
+    vin = st.selectbox("Select VIN", ["VIN001", "VIN002", "VIN003"])
+    campaign_id = st.selectbox(
+        "Select Campaign",
+        ["FOTA_2026_001", "AOTA_2026_001", "FOTA_2026_002"]
+    )
+
+    col1, col2, col3 = st.columns(3)
+
+    battery = col1.slider("Battery %", 0, 100, 75)
+    ignition = col2.checkbox("Ignition ON")
+    driving = col3.checkbox("Vehicle Driving")
+
+    col4, col5, col6, col7 = st.columns(4)
+
+    wifi_connected = col4.checkbox("WiFi Connected", value=True)
+    tls_enabled = col5.checkbox("TLS Enabled", value=True)
+    certificate_valid = col6.checkbox("Certificate Valid", value=True)
+    package_signature_valid = col7.checkbox("Package Signature Valid", value=True)
+
+    checksum_valid = st.checkbox("Checksum Valid", value=True)
+
+    if st.button("Run OTA Validation"):
+        logs = []
+
+        logs.append(f"[INFO] Selected VIN: {vin}")
+        logs.append(f"[INFO] Selected Campaign: {campaign_id}")
+
+        result = "PASS"
+        final_decision = "OTA ALLOWED"
+
+        if battery < 60:
+            logs.append(f"[FAIL] Battery too low: {battery}%")
+            result = "FAIL"
+            final_decision = "OTA BLOCKED - LOW BATTERY"
+        else:
+            logs.append(f"[PASS] Battery OK: {battery}%")
+
+        if ignition:
+            logs.append("[FAIL] Ignition is ON")
+            result = "FAIL"
+            final_decision = "OTA BLOCKED - IGNITION ON"
+        else:
+            logs.append("[PASS] Ignition OFF")
+
+        if driving:
+            logs.append("[FAIL] Vehicle is driving")
+            result = "FAIL"
+            final_decision = "OTA BLOCKED - VEHICLE DRIVING"
+        else:
+            logs.append("[PASS] Vehicle parked")
+
+        if not wifi_connected:
+            logs.append("[FAIL] WiFi not connected")
+            result = "FAIL"
+            final_decision = "OTA BLOCKED - WIFI NOT CONNECTED"
+        else:
+            logs.append("[PASS] WiFi connected")
+
+        if not tls_enabled:
+            logs.append("[FAIL] TLS not enabled")
+            result = "FAIL"
+            final_decision = "OTA BLOCKED - TLS FAILURE"
+        else:
+            logs.append("[PASS] TLS enabled")
+
+        if not certificate_valid:
+            logs.append("[FAIL] Certificate invalid")
+            result = "FAIL"
+            final_decision = "OTA BLOCKED - CERTIFICATE FAILURE"
+        else:
+            logs.append("[PASS] Certificate valid")
+
+        if not package_signature_valid:
+            logs.append("[FAIL] Package signature invalid")
+            result = "FAIL"
+            final_decision = "OTA BLOCKED - SIGNATURE FAILURE"
+        else:
+            logs.append("[PASS] Package signature valid")
+
+        if not checksum_valid:
+            logs.append("[FAIL] Checksum validation failed")
+            result = "FAIL"
+            final_decision = "OTA BLOCKED - CHECKSUM FAILURE"
+        else:
+            logs.append("[PASS] Checksum valid")
+
+        st.subheader("Validation Summary")
+
+        col_a, col_b = st.columns(2)
+        col_a.metric("Result", result)
+        col_b.metric("Final Decision", final_decision)
+
+        if result == "PASS":
+            st.success(final_decision)
+        else:
+            st.error(final_decision)
+
+        st.subheader("Validation Logs")
+
+        for log in logs:
+            st.write(log)
