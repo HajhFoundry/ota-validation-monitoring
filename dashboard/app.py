@@ -20,6 +20,17 @@ def get_api_data(endpoint):
     except Exception as error:
         return {"error": str(error)}
 
+def post_api_data(endpoint, payload=None):
+    try:
+        response = requests.post(
+            f"{API_BASE_URL}{endpoint}",
+            json=payload,
+            timeout=5
+        )
+        return response.json()
+    except Exception as error:
+        return {"error": str(error)}
+
 
 vehicles = get_api_data("/vehicles")
 campaigns = get_api_data("/campaigns")
@@ -37,7 +48,8 @@ page = st.sidebar.radio(
         "Campaigns",
         "OTA Status",
         "Release KPI View",
-        "Manual OTA Test Console"
+        "Manual OTA Test Console",
+        "Live OTA Operations"
     ]
 )
 
@@ -366,4 +378,114 @@ elif page == "Manual OTA Test Console":
 
     if st.button("Reset Test Session"):
         st.session_state.manual_test_results = []
+        st.rerun()
+
+elif page == "Live OTA Operations":
+    st.header("Live OTA Operations Center")
+
+    st.write(
+        "Simulate a live OTA campaign execution and monitor OTA progress, "
+        "state transitions, and operational logs."
+    )
+
+    vin = st.selectbox("Select Vehicle", ["VIN001", "VIN002", "VIN003"])
+    campaign_id = st.selectbox(
+        "Select OTA Campaign",
+        ["FOTA_2026_001", "AOTA_2026_001", "FOTA_2026_002"]
+    )
+
+    if "live_ota_logs" not in st.session_state:
+        st.session_state.live_ota_logs = []
+
+    if "live_ota_state" not in st.session_state:
+        st.session_state.live_ota_state = "IDLE"
+
+    if "live_ota_progress" not in st.session_state:
+        st.session_state.live_ota_progress = 0
+
+    if "live_ota_results" not in st.session_state:
+        st.session_state.live_ota_results = []
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric("VIN", vin)
+    col2.metric("OTA State", st.session_state.live_ota_state)
+    col3.metric("Progress", f"{st.session_state.live_ota_progress}%")
+
+    progress_bar = st.progress(st.session_state.live_ota_progress)
+
+    if st.button("Start Live OTA Simulation"):
+        st.session_state.live_ota_logs = []
+        post_api_data(
+            "/ota/start",
+            {
+                "vin": vin,
+                "campaign_id": campaign_id
+            }
+        )
+
+        ota_steps = [
+            ("PENDING", 0),
+            ("DOWNLOADING", 25),
+            ("DOWNLOADING", 50),
+            ("PAUSED_LOW_BATTERY", 50),
+            ("RESUMING", 50),
+            ("DOWNLOADING", 75),
+            ("DOWNLOADING", 100),
+            ("VERIFYING", 100),
+            ("INSTALLING", 100),
+            ("REBOOTING", 100),
+            ("SUCCESS", 100)
+        ]
+
+        for state, progress in ota_steps:
+            st.session_state.live_ota_state = state
+            st.session_state.live_ota_progress = progress
+
+            log_message = (
+                f"[OTA EVENT] VIN={vin} "
+                f"Campaign={campaign_id} "
+                f"State={state} "
+                f"Progress={progress}%"
+            )
+
+            st.session_state.live_ota_logs.append(log_message)
+            st.session_state.live_ota_results.append(
+               {
+                    "vin": vin,
+                    "campaign_id": campaign_id,
+                    "final_state": st.session_state.live_ota_state,
+                    "progress": st.session_state.live_ota_progress,
+                    "event_count": len(st.session_state.live_ota_logs),
+                    "logs": st.session_state.live_ota_logs
+               }
+            )
+
+            post_api_data(
+                f"/ota/resume/{vin}",
+                None
+            )
+        st.rerun()
+
+    st.subheader("Current OTA Status")
+
+    col4, col5, col6 = st.columns(3)
+    col4.metric("Vehicle", vin)
+    col5.metric("State", st.session_state.live_ota_state)
+    col6.metric("Progress", f"{st.session_state.live_ota_progress}%")
+
+    st.progress(st.session_state.live_ota_progress)
+
+    st.subheader("OTA Event Logs")
+
+    if st.session_state.live_ota_logs:
+        for log in st.session_state.live_ota_logs:
+            st.write(log)
+    else:
+        st.info("No live OTA events yet.")
+
+    if st.button("Reset Live OTA"):
+        st.session_state.live_ota_state = "IDLE"
+        st.session_state.live_ota_progress = 0
+        st.session_state.live_ota_logs = []
         st.rerun()
