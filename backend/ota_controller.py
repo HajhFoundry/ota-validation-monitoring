@@ -35,3 +35,14 @@ def get_ota_status(vin):
         return {"error": "No OTA status found", "vin": vin}
 
     return ota_status_store[vin]
+
+def update_ota_status(vin, campaign_id, state, progress, message="OTA status updated"):
+    ota_status_store[vin] = {
+        "vin": vin,
+        "campaign_id": campaign_id,
+        "state": state,
+        "progress": progress,
+        "message": message
+    }
+
+    return ota_status_store[vin]

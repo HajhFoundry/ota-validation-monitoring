@@ -1,7 +1,8 @@
 import json
 from fastapi import FastAPI
 from pydantic import BaseModel
-from backend.ota_controller import start_ota, pause_ota, resume_ota, get_ota_status
+from backend.ota_controller import (start_ota, pause_ota, resume_ota, get_ota_status, update_ota_status)
+
 
 app = FastAPI(
     title="OTA Validation & Monitoring Mock API",
@@ -12,6 +13,13 @@ app = FastAPI(
 class OTAStartRequest(BaseModel):
     vin: str
     campaign_id: str
+
+class OTAStatusUpdateRequest(BaseModel):
+    vin: str
+    campaign_id: str
+    state: str
+    progress: int
+    message: str = "OTA status updated"
 
 def load_json(file_path):
     with open(file_path, "r") as file:
@@ -25,7 +33,10 @@ def health_check():
         "status": "running"
     }
 
-
+@app.get("/debug/routes")
+def debug_routes():
+    return [route.path for route in app.routes]
+    
 @app.get("/vehicles")
 def get_vehicles():
     return load_json("data/vehicles.json")
@@ -77,7 +88,17 @@ def api_pause_ota(vin: str):
 def api_resume_ota(vin: str):
     return resume_ota(vin)
 
+@app.post("/ota/update-status")
+def api_update_ota_status(request: OTAStatusUpdateRequest):
+    return update_ota_status(
+        request.vin,
+        request.campaign_id,
+        request.state,
+        request.progress,
+        request.message
+    )
 
 @app.get("/ota/status/{vin}")
 def api_get_ota_status(vin: str):
     return get_ota_status(vin)
+
