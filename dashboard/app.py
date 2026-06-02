@@ -1,3 +1,4 @@
+import json
 import requests
 import streamlit as st
 
@@ -23,6 +24,10 @@ def get_api_data(endpoint):
 vehicles = get_api_data("/vehicles")
 campaigns = get_api_data("/campaigns")
 
+if "manual_test_results" not in st.session_state:
+    st.session_state.manual_test_results = []
+
+
 st.sidebar.header("Navigation")
 page = st.sidebar.radio(
     "Select View",
@@ -43,17 +48,11 @@ if page == "Overview":
     vehicle_count = len(vehicles) if isinstance(vehicles, list) else 0
     campaign_count = len(campaigns) if isinstance(campaigns, list) else 0
 
-    active_campaigns = 0
-    fota_campaigns = 0
-    aota_campaigns = 0
-
-    if isinstance(campaigns, list):
-        active_campaigns = len([c for c in campaigns if c.get("status") == "ACTIVE"])
-        fota_campaigns = len([c for c in campaigns if c.get("update_type") == "FOTA"])
-        aota_campaigns = len([c for c in campaigns if c.get("update_type") == "AOTA"])
+    active_campaigns = len([c for c in campaigns if c.get("status") == "ACTIVE"]) if isinstance(campaigns, list) else 0
+    fota_campaigns = len([c for c in campaigns if c.get("update_type") == "FOTA"]) if isinstance(campaigns, list) else 0
+    aota_campaigns = len([c for c in campaigns if c.get("update_type") == "AOTA"]) if isinstance(campaigns, list) else 0
 
     col1, col2, col3, col4 = st.columns(4)
-
     col1.metric("Vehicles", vehicle_count)
     col2.metric("Campaigns", campaign_count)
     col3.metric("Active Campaigns", active_campaigns)
@@ -67,7 +66,7 @@ if page == "Overview":
 
     st.info(
         "This dashboard monitors OTA campaign targeting, vehicle inventory, "
-        "OTA status, and release-level KPIs."
+        "OTA status, manual validation testing, and release-level KPIs."
     )
 
 
@@ -97,7 +96,6 @@ elif page == "Vehicles":
             filtered = [v for v in filtered if v.get("update_type") == selected_type]
 
         st.dataframe(filtered, use_container_width=True)
-
     else:
         st.error(vehicles)
 
@@ -128,7 +126,6 @@ elif page == "Campaigns":
             filtered = [c for c in filtered if c.get("update_type") == selected_type]
 
         st.dataframe(filtered, use_container_width=True)
-
     else:
         st.error(campaigns)
 
@@ -183,6 +180,10 @@ elif page == "Release KPI View":
             ]
         )
 
+    manual_total = len(st.session_state.manual_test_results)
+    manual_passed = len([t for t in st.session_state.manual_test_results if t["result"] == "PASS"])
+    manual_failed = len([t for t in st.session_state.manual_test_results if t["result"] == "FAIL"])
+
     col1, col2, col3, col4 = st.columns(4)
 
     col1.metric("Total Vehicles", total_vehicles)
@@ -190,13 +191,21 @@ elif page == "Release KPI View":
     col3.metric("Battery Risk Vehicles", blocked_battery)
     col4.metric("Cybersecurity Risk Vehicles", blocked_security)
 
+    st.subheader("Manual Validation KPIs")
+
+    col5, col6, col7 = st.columns(3)
+    col5.metric("Manual Tests Run", manual_total)
+    col6.metric("Passed", manual_passed)
+    col7.metric("Failed", manual_failed)
+
     st.subheader("Release Interpretation")
 
     st.write(
         "- Battery risk vehicles may require update deferral or retry scheduling.\n"
         "- Cybersecurity risk vehicles should be blocked from install until package validation passes.\n"
-        "- Campaign health can be monitored through eligibility, safety, cybersecurity, and OTA state results."
+        "- Manual validation KPIs help feature owners track pass/fail behavior during campaign readiness testing."
     )
+
 
 elif page == "Manual OTA Test Console":
     st.header("Manual OTA Test Console")
@@ -292,6 +301,24 @@ elif page == "Manual OTA Test Console":
         else:
             logs.append("[PASS] Checksum valid")
 
+        test_result = {
+            "vin": vin,
+            "campaign_id": campaign_id,
+            "result": result,
+            "decision": final_decision,
+            "battery": battery,
+            "ignition": ignition,
+            "driving": driving,
+            "wifi_connected": wifi_connected,
+            "tls_enabled": tls_enabled,
+            "certificate_valid": certificate_valid,
+            "package_signature_valid": package_signature_valid,
+            "checksum_valid": checksum_valid,
+            "logs": logs
+        }
+
+        st.session_state.manual_test_results.append(test_result)
+
         st.subheader("Validation Summary")
 
         col_a, col_b = st.columns(2)
@@ -307,3 +334,36 @@ elif page == "Manual OTA Test Console":
 
         for log in logs:
             st.write(log)
+
+    st.subheader("Manual Test Session Summary")
+
+    total_tests = len(st.session_state.manual_test_results)
+    passed_tests = len([t for t in st.session_state.manual_test_results if t["result"] == "PASS"])
+    failed_tests = len([t for t in st.session_state.manual_test_results if t["result"] == "FAIL"])
+
+    col_x, col_y, col_z = st.columns(3)
+
+    col_x.metric("Total Tests Run", total_tests)
+    col_y.metric("Passed", passed_tests)
+    col_z.metric("Failed", failed_tests)
+
+    if st.session_state.manual_test_results:
+        st.dataframe(st.session_state.manual_test_results, use_container_width=True)
+    else:
+        st.info("No manual tests have been run yet.")
+
+    report_text = json.dumps(
+        st.session_state.manual_test_results,
+        indent=4
+    )
+
+    st.download_button(
+        label="Download Test Report",
+        data=report_text,
+        file_name="manual_ota_test_report.txt",
+        mime="text/plain"
+    )
+
+    if st.button("Reset Test Session"):
+        st.session_state.manual_test_results = []
+        st.rerun()
