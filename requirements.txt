@@ -1,5 +1,6 @@
-fastapi
-uvicorn
-paho-mqtt
-streamlit
+fastapi==0.115.0
+uvicorn==0.30.6
+starlette==0.38.6
 requests
+paho-mqtt
+streamlit==1.37.1
