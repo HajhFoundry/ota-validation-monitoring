@@ -1,8 +1,8 @@
 import json
 
-from eligibility_rules import evaluate_eligibility
-from safety_rules import evaluate_safety
-from cybersecurity_rules import evaluate_cybersecurity
+from vehicle_client.eligibility_rules import evaluate_eligibility
+from vehicle_client.safety_rules import evaluate_safety
+from vehicle_client.cybersecurity_rules import evaluate_cybersecurity
 
 def load_json(file_path):
     with open(file_path, "r") as file:
