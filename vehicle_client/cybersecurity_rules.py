@@ -1,5 +1,4 @@
 def check_tls(vehicle):
-
     if not vehicle["tls_enabled"]:
         return False, "TLS not enabled"
 
@@ -7,7 +6,6 @@ def check_tls(vehicle):
 
 
 def check_certificate(vehicle):
-
     if not vehicle["certificate_valid"]:
         return False, "Certificate invalid"
 
@@ -15,7 +13,6 @@ def check_certificate(vehicle):
 
 
 def check_signature(vehicle):
-
     if not vehicle["package_signature_valid"]:
         return False, "Package signature invalid"
 
@@ -23,7 +20,6 @@ def check_signature(vehicle):
 
 
 def check_checksum(vehicle):
-
     if not vehicle["checksum_valid"]:
         return False, "Checksum validation failed"
 
@@ -31,7 +27,6 @@ def check_checksum(vehicle):
 
 
 def evaluate_cybersecurity(vehicle):
-
     rules = [
         check_tls,
         check_certificate,
@@ -42,7 +37,6 @@ def evaluate_cybersecurity(vehicle):
     failed_reasons = []
 
     for rule in rules:
-
         passed, reason = rule(vehicle)
 
         if not passed:
