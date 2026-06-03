@@ -450,21 +450,30 @@ elif page == "Live OTA Operations":
             )
 
             st.session_state.live_ota_logs.append(log_message)
-            st.session_state.live_ota_results.append(
-               {
-                    "vin": vin,
-                    "campaign_id": campaign_id,
-                    "final_state": st.session_state.live_ota_state,
-                    "progress": st.session_state.live_ota_progress,
-                    "event_count": len(st.session_state.live_ota_logs),
-                    "logs": st.session_state.live_ota_logs
-               }
-            )
+            
 
             post_api_data(
-                f"/ota/resume/{vin}",
-                None
+                "/ota/update-status",
+                {
+                    "vin": vin,
+                    "campaign_id": campaign_id,
+                    "state": state,
+                    "progress": progress,
+                    "message": f"OTA state changed to {state}"
+                }
             )
+
+        st.session_state.live_ota_results.append(
+            {
+                "vin": vin,
+                "campaign_id": campaign_id,
+                "final_state": st.session_state.live_ota_state,
+                "progress": st.session_state.live_ota_progress,
+                "event_count": len(st.session_state.live_ota_logs),
+                "logs": st.session_state.live_ota_logs
+            }
+        )
+
         st.rerun()
 
     st.subheader("Current OTA Status")
