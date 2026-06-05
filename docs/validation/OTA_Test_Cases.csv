@@ -1,0 +1,16 @@
+Test_ID,Requirement_ID,Module,Test_Case,Precondition,Test_Steps,Expected_Result,Priority,Automation_Status
+TC_001,REQ_ELIG_001,Eligibility,Battery Above Threshold,Vehicle Connected,Set Battery=80%,OTA Eligible,High,Automated
+TC_002,REQ_ELIG_001,Eligibility,Battery Below Threshold,Vehicle Connected,Set Battery=50%,OTA Blocked,High,Automated
+TC_003,REQ_ELIG_002,Eligibility,Ignition ON,Vehicle Connected,Set Ignition=True,OTA Blocked,High,Automated
+TC_004,REQ_ELIG_003,Eligibility,Vehicle Driving,Vehicle Connected,Set Driving=True,OTA Blocked,High,Automated
+TC_005,REQ_SAFE_001,Safety,Driving Safety Validation,Vehicle Driving,Execute OTA Validation,Safety Check Failed,Critical,Automated
+TC_006,REQ_CYBER_001,Cybersecurity,TLS Validation,TLS Disabled,Execute Cyber Validation,Cyber Check Failed,Critical,Automated
+TC_007,REQ_CYBER_002,Cybersecurity,Certificate Validation,Invalid Certificate,Execute Cyber Validation,Cyber Check Failed,Critical,Automated
+TC_008,REQ_CYBER_003,Cybersecurity,Signature Validation,Invalid Signature,Execute Cyber Validation,Cyber Check Failed,Critical,Automated
+TC_009,REQ_CYBER_004,Cybersecurity,Checksum Validation,Invalid Checksum,Execute Cyber Validation,Cyber Check Failed,Critical,Automated
+TC_010,REQ_CAMPAIGN_001,Campaign Management,Targeted Vehicle Campaign,Matching Vehicle,Execute Campaign Validation,Campaign Eligible,Medium,Automated
+TC_011,REQ_API_001,Backend API,Health Check API,None,GET /,HTTP 200,Medium,Automated
+TC_012,REQ_API_002,Backend API,Vehicle API,None,GET /vehicles,HTTP 200,Medium,Automated
+TC_013,REQ_API_003,Backend API,Campaign API,None,GET /campaigns,HTTP 200,Medium,Automated
+TC_014,REQ_API_004,Backend API,OTA Start API,None,POST /ota/start,OTA STARTED,High,Automated
+TC_015,REQ_API_005,Backend API,OTA Status Update API,None,POST /ota/update-status,OTA SUCCESS,High,Automated

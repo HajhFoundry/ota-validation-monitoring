@@ -1,0 +1,5 @@
+Defect_ID,Title,Severity,Priority,Status,Owner,Description
+DEFECT_001,Low Battery Pause Not Reflected,Medium,High,Closed,Validation Team,Dashboard did not show OTA paused state
+DEFECT_002,TLS Validation Incorrectly Passed,Critical,Critical,Closed,Validation Team,Cybersecurity validation allowed invalid TLS state
+DEFECT_003,Campaign Region Mismatch,Medium,Medium,Closed,Validation Team,Campaign targeting accepted unsupported region
+DEFECT_004,OTA Status Not Updated After Resume,High,High,Closed,Validation Team,Backend status remained paused after resume

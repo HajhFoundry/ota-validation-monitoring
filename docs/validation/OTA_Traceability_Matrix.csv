@@ -1,0 +1,15 @@
+Requirement_ID,Requirement,Test_Case,Automation_File,Status
+REQ_ELIG_001,Battery Threshold Validation,TC_001 TC_002,test_eligibility_rules.py,Covered
+REQ_ELIG_002,Ignition OFF Requirement,TC_003,test_eligibility_rules.py,Covered
+REQ_ELIG_003,Vehicle Must Be Parked,TC_004,test_eligibility_rules.py,Covered
+REQ_SAFE_001,Driving Safety Validation,TC_005,test_safety_rules.py,Covered
+REQ_CYBER_001,TLS Validation,TC_006,test_cybersecurity_rules.py,Covered
+REQ_CYBER_002,Certificate Validation,TC_007,test_cybersecurity_rules.py,Covered
+REQ_CYBER_003,Signature Validation,TC_008,test_cybersecurity_rules.py,Covered
+REQ_CYBER_004,Checksum Validation,TC_009,test_cybersecurity_rules.py,Covered
+REQ_CAMPAIGN_001,Campaign Targeting Validation,TC_010,test_campaign_manager.py,Covered
+REQ_API_001,Health Check API,TC_011,test_backend_api.py,Covered
+REQ_API_002,Vehicle API,TC_012,test_backend_api.py,Covered
+REQ_API_003,Campaign API,TC_013,test_backend_api.py,Covered
+REQ_API_004,OTA Start API,TC_014,test_backend_api.py,Covered
+REQ_API_005,OTA Status Update API,TC_015,test_backend_api.py,Covered
