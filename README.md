@@ -77,6 +77,38 @@ run_mqtt_demo.bat
 * Campaign Targeting
 * Backend API Validation
 
+# Screenshots
+
+## Overview Dashboard
+![Overview](docs/screenshots/01_Overview_Dashboard.png)
+
+## Vehicle Inventory
+![Vehicles](docs/screenshots/02_Vehicles_Dashboard.png)
+
+## Campaign Dashboard
+![Campaigns](docs/screenshots/03_Campaigns_Dashboard.png)
+
+## OTA Status Tracking
+![Status](docs/screenshots/04_OTA_Status_Dashboard.png)
+
+## Release KPI Dashboard
+![KPI](docs/screenshots/05_Release_KPI_Dashboard.png)
+
+## Manual OTA Validation Console
+![Manual](docs/screenshots/06_Manual_OTA_Test_Console.png)
+
+## Live OTA Operations
+![Live OTA](docs/screenshots/07_Live_OTA_Operations.png)
+
+## Automation Results
+![Automation](docs/screenshots/08_Automation_Test_Results.png)
+
+## MQTT Publisher
+![Publisher](docs/screenshots/09_MQTT_Publisher.png)
+
+## MQTT Subscriber
+![Subscriber](docs/screenshots/10_MQTT_Subscriber.png)
+
 ## Author
 
 Harpreet Singh
