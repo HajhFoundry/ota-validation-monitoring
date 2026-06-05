@@ -1,0 +1,10 @@
+{
+    "minimum_battery_percent": 60,
+    "block_if_ignition_on": true,
+    "block_if_vehicle_driving": true,
+    "require_wifi": true,
+    "require_tls": true,
+    "require_valid_certificate": true,
+    "require_valid_signature": true,
+    "require_valid_checksum": true
+  }

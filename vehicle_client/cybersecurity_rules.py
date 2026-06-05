@@ -1,46 +1,26 @@
-def check_tls(vehicle):
-    if not vehicle["tls_enabled"]:
-        return False, "TLS not enabled"
-
-    return True, "TLS valid"
+import json
 
 
-def check_certificate(vehicle):
-    if not vehicle["certificate_valid"]:
-        return False, "Certificate invalid"
-
-    return True, "Certificate valid"
-
-
-def check_signature(vehicle):
-    if not vehicle["package_signature_valid"]:
-        return False, "Package signature invalid"
-
-    return True, "Signature valid"
-
-
-def check_checksum(vehicle):
-    if not vehicle["checksum_valid"]:
-        return False, "Checksum validation failed"
-
-    return True, "Checksum valid"
+def load_rules_config():
+    with open("config/ota_rules_config.json", "r") as file:
+        return json.load(file)
 
 
 def evaluate_cybersecurity(vehicle):
-    rules = [
-        check_tls,
-        check_certificate,
-        check_signature,
-        check_checksum
-    ]
-
+    config = load_rules_config()
     failed_reasons = []
 
-    for rule in rules:
-        passed, reason = rule(vehicle)
+    if config["require_tls"] and not vehicle["tls_enabled"]:
+        failed_reasons.append("TLS not enabled")
 
-        if not passed:
-            failed_reasons.append(reason)
+    if config["require_valid_certificate"] and not vehicle["certificate_valid"]:
+        failed_reasons.append("Certificate invalid")
+
+    if config["require_valid_signature"] and not vehicle["package_signature_valid"]:
+        failed_reasons.append("Package signature invalid")
+
+    if config["require_valid_checksum"] and not vehicle["checksum_valid"]:
+        failed_reasons.append("Checksum validation failed")
 
     if failed_reasons:
         return False, failed_reasons

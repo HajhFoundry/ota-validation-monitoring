@@ -1,3 +1,10 @@
+import json
+
+
+def load_rules_config():
+    with open("config/ota_rules_config.json", "r") as file:
+        return json.load(file)
+        
 def check_battery(vehicle, campaign):
     if vehicle["battery"] < campaign["minimum_battery"]:
         return False, f"Battery too low: {vehicle['battery']}%"
