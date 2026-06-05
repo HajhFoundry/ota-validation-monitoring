@@ -1,0 +1,56 @@
+[
+    {
+      "test_id": "CAMPAIGN_001",
+      "vehicle": {
+        "vin": "VIN001",
+        "model": "Explorer",
+        "year": 2025,
+        "region": "NA",
+        "update_type": "FOTA"
+      },
+      "campaign": {
+        "campaign_id": "FOTA_2026_001",
+        "target_model": "Explorer",
+        "target_year": 2025,
+        "target_region": "NA",
+        "update_type": "FOTA"
+      },
+      "expected_result": true
+    },
+    {
+      "test_id": "CAMPAIGN_002",
+      "vehicle": {
+        "vin": "VIN002",
+        "model": "MustangMachE",
+        "year": 2024,
+        "region": "NA",
+        "update_type": "AOTA"
+      },
+      "campaign": {
+        "campaign_id": "FOTA_2026_001",
+        "target_model": "Explorer",
+        "target_year": 2025,
+        "target_region": "NA",
+        "update_type": "FOTA"
+      },
+      "expected_result": false
+    },
+    {
+      "test_id": "CAMPAIGN_003",
+      "vehicle": {
+        "vin": "VIN003",
+        "model": "Explorer",
+        "year": 2025,
+        "region": "EU",
+        "update_type": "FOTA"
+      },
+      "campaign": {
+        "campaign_id": "FOTA_2026_001",
+        "target_model": "Explorer",
+        "target_year": 2025,
+        "target_region": "NA",
+        "update_type": "FOTA"
+      },
+      "expected_result": false
+    }
+  ]

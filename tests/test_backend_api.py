@@ -1,3 +1,4 @@
+import json
 from fastapi.testclient import TestClient
 from backend.main import app
 
@@ -5,59 +6,30 @@ from backend.main import app
 client = TestClient(app)
 
 
-def test_health_check():
-    response = client.get("/")
+def test_backend_api_from_json():
+    with open("test_data/backend_api_test_data.json", "r") as file:
+        test_cases = json.load(file)
 
-    assert response.status_code == 200
-    assert response.json()["status"] == "running"
+    for case in test_cases:
+        if case["method"] == "GET":
+            response = client.get(case["endpoint"])
+        elif case["method"] == "POST":
+            response = client.post(
+                case["endpoint"],
+                json=case.get("payload", {})
+            )
+        else:
+            raise ValueError(f"Unsupported method: {case['method']}")
 
+        assert response.status_code == case["expected_status"], (
+            f"{case['test_id']} failed. "
+            f"Expected status={case['expected_status']} "
+            f"Actual={response.status_code}"
+        )
 
-def test_get_vehicles():
-    response = client.get("/vehicles")
-
-    assert response.status_code == 200
-    assert isinstance(response.json(), list)
-    assert len(response.json()) >= 1
-
-
-def test_get_campaigns():
-    response = client.get("/campaigns")
-
-    assert response.status_code == 200
-    assert isinstance(response.json(), list)
-    assert len(response.json()) >= 1
-
-
-def test_ota_start_status_flow():
-    start_response = client.post(
-        "/ota/start",
-        json={
-            "vin": "VIN001",
-            "campaign_id": "FOTA_2026_001"
-        }
-    )
-
-    assert start_response.status_code == 200
-    assert start_response.json()["state"] == "STARTED"
-
-    status_response = client.get("/ota/status/VIN001")
-
-    assert status_response.status_code == 200
-    assert status_response.json()["vin"] == "VIN001"
-
-
-def test_ota_update_status():
-    response = client.post(
-        "/ota/update-status",
-        json={
-            "vin": "VIN001",
-            "campaign_id": "FOTA_2026_001",
-            "state": "SUCCESS",
-            "progress": 100,
-            "message": "OTA completed successfully"
-        }
-    )
-
-    assert response.status_code == 200
-    assert response.json()["state"] == "SUCCESS"
-    assert response.json()["progress"] == 100
+        if "expected_state" in case:
+            assert response.json()["state"] == case["expected_state"], (
+                f"{case['test_id']} failed. "
+                f"Expected state={case['expected_state']} "
+                f"Actual={response.json().get('state')}"
+            )

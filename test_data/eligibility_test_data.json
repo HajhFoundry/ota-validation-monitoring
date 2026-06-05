@@ -1,0 +1,30 @@
+[
+    {
+      "test_id": "ELIG_001",
+      "battery": 80,
+      "ignition": false,
+      "driving": false,
+      "expected_result": true
+    },
+    {
+      "test_id": "ELIG_002",
+      "battery": 50,
+      "ignition": false,
+      "driving": false,
+      "expected_result": false
+    },
+    {
+      "test_id": "ELIG_003",
+      "battery": 80,
+      "ignition": true,
+      "driving": false,
+      "expected_result": false
+    },
+    {
+      "test_id": "ELIG_004",
+      "battery": 80,
+      "ignition": false,
+      "driving": true,
+      "expected_result": false
+    }
+  ]

@@ -1,0 +1,45 @@
+[
+    {
+      "test_id": "API_001",
+      "method": "GET",
+      "endpoint": "/",
+      "expected_status": 200
+    },
+    {
+      "test_id": "API_002",
+      "method": "GET",
+      "endpoint": "/vehicles",
+      "expected_status": 200
+    },
+    {
+      "test_id": "API_003",
+      "method": "GET",
+      "endpoint": "/campaigns",
+      "expected_status": 200
+    },
+    {
+      "test_id": "API_004",
+      "method": "POST",
+      "endpoint": "/ota/start",
+      "payload": {
+        "vin": "VIN001",
+        "campaign_id": "FOTA_2026_001"
+      },
+      "expected_status": 200,
+      "expected_state": "STARTED"
+    },
+    {
+      "test_id": "API_005",
+      "method": "POST",
+      "endpoint": "/ota/update-status",
+      "payload": {
+        "vin": "VIN001",
+        "campaign_id": "FOTA_2026_001",
+        "state": "SUCCESS",
+        "progress": 100,
+        "message": "OTA completed successfully"
+      },
+      "expected_status": 200,
+      "expected_state": "SUCCESS"
+    }
+  ]

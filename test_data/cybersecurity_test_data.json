@@ -1,0 +1,38 @@
+[
+    {
+      "test_id": "CYBER_001",
+      "vin": "VIN001",
+      "tls_enabled": true,
+      "certificate_valid": true,
+      "package_signature_valid": true,
+      "checksum_valid": true,
+      "expected_result": true
+    },
+    {
+      "test_id": "CYBER_002",
+      "vin": "VIN002",
+      "tls_enabled": true,
+      "certificate_valid": true,
+      "package_signature_valid": false,
+      "checksum_valid": true,
+      "expected_result": false
+    },
+    {
+      "test_id": "CYBER_003",
+      "vin": "VIN003",
+      "tls_enabled": true,
+      "certificate_valid": true,
+      "package_signature_valid": true,
+      "checksum_valid": false,
+      "expected_result": false
+    },
+    {
+      "test_id": "CYBER_004",
+      "vin": "VIN004",
+      "tls_enabled": false,
+      "certificate_valid": true,
+      "package_signature_valid": true,
+      "checksum_valid": true,
+      "expected_result": false
+    }
+  ]

@@ -1,53 +1,20 @@
-import pytest
+import json
 from vehicle_client.cybersecurity_rules import evaluate_cybersecurity
 
 
-@pytest.mark.parametrize(
-    "vehicle, expected_result",
-    [
-        (
-            {
-                "vin": "VIN001",
-                "tls_enabled": True,
-                "certificate_valid": True,
-                "package_signature_valid": True,
-                "checksum_valid": True
-            },
-            True
-        ),
-        (
-            {
-                "vin": "VIN002",
-                "tls_enabled": True,
-                "certificate_valid": True,
-                "package_signature_valid": False,
-                "checksum_valid": True
-            },
-            False
-        ),
-        (
-            {
-                "vin": "VIN003",
-                "tls_enabled": True,
-                "certificate_valid": True,
-                "package_signature_valid": True,
-                "checksum_valid": False
-            },
-            False
-        ),
-        (
-            {
-                "vin": "VIN004",
-                "tls_enabled": False,
-                "certificate_valid": True,
-                "package_signature_valid": True,
-                "checksum_valid": True
-            },
-            False
-        ),
-    ]
-)
-def test_cybersecurity_rules(vehicle, expected_result):
-    result, reasons = evaluate_cybersecurity(vehicle)
+def test_cybersecurity_rules_from_json():
+    with open("test_data/cybersecurity_test_data.json", "r") as file:
+        test_cases = json.load(file)
 
-    assert result is expected_result
+    for case in test_cases:
+        vehicle = {
+            "vin": case["vin"],
+            "tls_enabled": case["tls_enabled"],
+            "certificate_valid": case["certificate_valid"],
+            "package_signature_valid": case["package_signature_valid"],
+            "checksum_valid": case["checksum_valid"]
+        }
+
+        result, reasons = evaluate_cybersecurity(vehicle)
+
+        assert result is case["expected_result"], f"{case['test_id']} failed: {reasons}"

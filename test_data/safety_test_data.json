@@ -1,0 +1,20 @@
+[
+    {
+      "test_id": "SAFETY_001",
+      "vin": "VIN001",
+      "driving": false,
+      "expected_result": true
+    },
+    {
+      "test_id": "SAFETY_002",
+      "vin": "VIN002",
+      "driving": false,
+      "expected_result": true
+    },
+    {
+      "test_id": "SAFETY_003",
+      "vin": "VIN003",
+      "driving": true,
+      "expected_result": false
+    }
+  ]
